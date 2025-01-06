@@ -27,3 +27,23 @@ Console.WriteLine("Container created with id: {0}", container.Id);
 ![img_1.png](AzCosmosDbDemo/Images/img_1.png)
 
 ![img_2.png](AzCosmosDbDemo/Images/img_2.png)
+
+**Adding Items to the container**
+
+8. Add the following code to the Program.cs file for adding items to the container
+```csharp
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    ItemResponse<CosmosUser> item= await container.CreateItemAsync<CosmosUser>(user, new PartitionKey(user.username));
+    Console.WriteLine("Item created with id: {0}", item.Resource.id);
+    Console.WriteLine("Item created with StatusCode: {0}", item.StatusCode);
+    Console.WriteLine("");
+```
+9. Run the application and check the Azure portal for the newly added items in the container. See the console logs to verify the successful addition of items to the container.
+
+   ![img_3.png](AzCosmosDbDemo/Images/img_3.png)
+
+10. Navigate to the Azure portal and check the data in the container.
+    ![img_4.png](AzCosmosDbDemo/Images/img_4.png)
