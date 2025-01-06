@@ -77,3 +77,28 @@ Console.WriteLine("Container created with id: {0}", container.Id);
 2. Run the application and check the console logs to verify the successful retrieval of items from the container.
 
    ![img_5.png](AzCosmosDbDemo/Images/img_5.png)
+
+**Updating Items in the container**
+1. Add the following code to the Program.cs file for updating items in the container
+```csharp
+async Task UpdateUserEmail(string id,string username, string email)
+{
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    ItemResponse<CosmosUser> item = await container.ReadItemAsync<CosmosUser>(id, new PartitionKey(username));
+    CosmosUser user = item.Resource;
+    user.email = email;
+    item = await container.ReplaceItemAsync<CosmosUser>(user, id, new PartitionKey(username));
+    Console.WriteLine("Item updated with id: {0}", item.Resource.id);
+    Console.WriteLine("Item updated with StatusCode: {0}", item.StatusCode);
+}
+```
+2. Invoke the UpdateUserEmail method by passing the id, username, and email of the user to be updated.
+```csharp
+    await UpdateUserEmail("3", "Andy", "andynew1@demo.com");
+```
+3. Run the application and check the console logs to verify the successful update of items in the container.
+
+   ![img_6.png](AzCosmosDbDemo/Images/img_6.png)
