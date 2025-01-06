@@ -6,7 +6,10 @@
 3. Copy the connection string from the Azure portal--> Azure Cosmos DB account--> Keys--> Primary Connection String.
 ![img.png](AzCosmosDbDemo/Images/img.png)
 4. Add the following code to the Program.cs file for referencing the connection string.
+
+   **Note:-** Donot expose the connection string publicly. I'm using it here for demonstration purposes only. I will delete this connection string after the demo.
 ```csharp
+
 string connectionString="AccountEndpoint=https://myazcosmosdbinstance.documents.azure.com:443/;AccountKey=e2qYKqY9NrS95G5YSgRAJGkh79VQN1DH3QGQ6OmpFfezF5dW9TldvvJgj90Z9oKAqEtXJaC3EXY7ACDbe417Dw==;";
 
 ```
@@ -47,3 +50,30 @@ Console.WriteLine("Container created with id: {0}", container.Id);
 
 10. Navigate to the Azure portal and check the data in the container.
     ![img_4.png](AzCosmosDbDemo/Images/img_4.png)
+
+**Querying Items from the container**
+1. Add the following code to the Program.cs file for querying items from the container
+```csharp
+   async Task DisplayUsers()
+    {
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM users");
+    FeedIterator<CosmosUser> resultSet = container.GetItemQueryIterator<CosmosUser>(queryDefinition);
+    
+    while (resultSet.HasMoreResults)
+    {
+        FeedResponse<CosmosUser> response = await resultSet.ReadNextAsync();
+        foreach (CosmosUser user in response)
+        {
+            Console.WriteLine("User: {0}, {1}, {2}, {3}", user.id, user.username, user.designation, user.email);
+            Console.WriteLine("-----------------------------------");
+        }
+    }
+}
+```
+2. Run the application and check the console logs to verify the successful retrieval of items from the container.
+
+   ![img_5.png](AzCosmosDbDemo/Images/img_5.png)

@@ -7,21 +7,23 @@ string partitionKey = "/username";
 CosmosClient client = ConnectDatabase();
 
 //Database Creation
-Database database = CreateDatabase(databaseName);
-Console.WriteLine("Database created with id: {0}", database.Id);
+//Database database = CreateDatabase(databaseName);
+// Console.WriteLine("Database created with id: {0}", database.Id);
 
 //Container Creation
-Container container = CreateContainer(containerName, partitionKey);
-Console.WriteLine("Container created with id: {0}", container.Id);
+// Container container = CreateContainer(containerName, partitionKey);
+// Console.WriteLine("Container created with id: {0}", container.Id);
 
 //Adding items to container
 CosmosUser user1 = new CosmosUser { id = "1", username = "Andrew", designation = "Developer", email = "user1@demo.com" };
 CosmosUser user2 = new CosmosUser { id = "2", username = "Michael", designation = "Senior Developer", email = "Michael@demo.com" };
 CosmosUser user3 = new CosmosUser { id = "3", username = "Andy", designation = "Senior Developer", email = "Andy@demo.com" };
 
-await CreateUser(user1);
-await CreateUser(user2);
-await CreateUser(user3);
+// await CreateUser(user1);
+// await CreateUser(user2);
+// await CreateUser(user3);
+
+await DisplayUsers();
 
 async Task CreateUser(CosmosUser user)
 {
@@ -35,6 +37,26 @@ async Task CreateUser(CosmosUser user)
     Console.WriteLine("");
 }
 
+//Querying items from container
+async Task DisplayUsers()
+{
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM users");
+    FeedIterator<CosmosUser> resultSet = container.GetItemQueryIterator<CosmosUser>(queryDefinition);
+    
+    while (resultSet.HasMoreResults)
+    {
+        FeedResponse<CosmosUser> response = await resultSet.ReadNextAsync();
+        foreach (CosmosUser user in response)
+        {
+            Console.WriteLine("User: {0}, {1}, {2}, {3}", user.id, user.username, user.designation, user.email);
+            Console.WriteLine("-----------------------------------");
+        }
+    }
+}
 
 CosmosClient ConnectDatabase()
 {
@@ -42,11 +64,11 @@ CosmosClient ConnectDatabase()
     return new CosmosClient(connectionString);
 }
 
-Database CreateDatabase(string databaseName)
-{
-    return client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
-}
-Container CreateContainer(string containerName, string partitionKey)
-{
-    return database.CreateContainerIfNotExistsAsync(containerName, partitionKey).Result;
-}
+// Database CreateDatabase(string databaseName)
+// {
+//     return client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+// }
+// Container CreateContainer(string containerName, string partitionKey)
+// {
+//     return database.CreateContainerIfNotExistsAsync(containerName, partitionKey).Result;
+// }
