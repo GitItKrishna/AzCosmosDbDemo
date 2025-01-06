@@ -1,4 +1,4 @@
-**This console application provides a utilities in .NET that makes it easy to interact with Azure Cosmos DB.**
+**This console application provides utilities in .NET that makes it easy to interact with Azure Cosmos DB.**
 
 1. Create a new console application from Visual Studio/rider templates.
 2. Add the following Nuget packages to the project:
