@@ -102,3 +102,9 @@ async Task UpdateUserEmail(string id,string username, string email)
 3. Run the application and check the console logs to verify the successful update of items in the container.
 
    ![img_6.png](AzCosmosDbDemo/Images/img_6.png)
+4. We can also update the items in the container using the PatchItemAsync Method as shown below.
+```csharp
+    await container.PatchItemAsync<CosmosUser>(id, new PartitionKey(username),
+         new[] { PatchOperation.Replace("/email", email) });
+    Console.WriteLine("Item updated with email: {0}", email);
+```
