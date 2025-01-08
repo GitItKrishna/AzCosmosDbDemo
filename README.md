@@ -202,3 +202,41 @@ async Task CreateUser(CosmosUser user)
    The record with id 1 is created in the container.
    ![img_10.png](AzCosmosDbDemo/Images/img_10.png)
 
+**Querying Array of Items from the container**
+1. Add the following code to the Program.cs file for querying array of items from the container
+```csharp
+async Task DisplayUsers()
+{
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM users");
+    FeedIterator<CosmosUser> resultSet = container.GetItemQueryIterator<CosmosUser>(queryDefinition);
+    
+    while (resultSet.HasMoreResults)
+    {
+        FeedResponse<CosmosUser> response = await resultSet.ReadNextAsync();
+        foreach (CosmosUser user in response)
+        {
+            Console.WriteLine("User: {0}, {1}, {2}, {3}", user.id, user.username, user.designation, user.email);
+            Console.WriteLine("Public Chapters");
+            foreach (int chapter in user.publicChapters)
+            {
+                Console.WriteLine(chapter);
+            }
+            Console.WriteLine("Students Information");
+            foreach (Student student in user.students)
+            {
+                Console.WriteLine("Student: {0}, {1}, {2}", student.studentId, student.studentName, student.price);
+            }
+                
+            Console.WriteLine("-----------------------------------");
+        }
+    }
+}
+
+```
+2. Run the application and check the console logs to verify the successful retrieval of items from the container.
+
+   ![img_11.png](AzCosmosDbDemo/Images/img_11.png)

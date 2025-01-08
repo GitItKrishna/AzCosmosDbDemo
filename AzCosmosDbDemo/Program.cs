@@ -19,12 +19,12 @@ CosmosUser user1 = new CosmosUser { id = "1", username = "Andrew", designation =
 CosmosUser user2 = new CosmosUser { id = "2", username = "Michael", designation = "Senior Developer", email = "Michael@demo.com" };
 CosmosUser user3 = new CosmosUser { id = "3", username = "Andy", designation = "Senior Developer", email = "Andy@demo.com" };
 
-await CreateUser(user1);
+//await CreateUser(user1);
 // await CreateUser(user2);
 // await CreateUser(user3);
 
 // await 
-//await DisplayUsers();
+await DisplayUsers();
 //await UpdateUserEmail("3", "Andy", "andynew1@demo.com");
 //await DeleteUser("3", "Andy");
 
@@ -83,6 +83,17 @@ async Task DisplayUsers()
         foreach (CosmosUser user in response)
         {
             Console.WriteLine("User: {0}, {1}, {2}, {3}", user.id, user.username, user.designation, user.email);
+            Console.WriteLine("Public Chapters");
+            foreach (int chapter in user.publicChapters)
+            {
+                Console.WriteLine(chapter);
+            }
+            Console.WriteLine("Students Information");
+            foreach (Student student in user.students)
+            {
+                Console.WriteLine("Student: {0}, {1}, {2}", student.studentId, student.studentName, student.price);
+            }
+                
             Console.WriteLine("-----------------------------------");
         }
     }
