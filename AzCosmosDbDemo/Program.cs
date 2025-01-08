@@ -15,17 +15,19 @@ CosmosClient client = ConnectDatabase();
 // Console.WriteLine("Container created with id: {0}", container.Id);
 
 //Adding items to container
-CosmosUser user1 = new CosmosUser { id = "1", username = "Andrew", designation = "Developer", email = "user1@demo.com" };
+CosmosUser user1 = new CosmosUser { id = "1", username = "Andrew", designation = "Developer", email = "user1@demo.com", publicChapters = new int[] { 1, 2, 3 }, students = new List<Student> { new Student("1", "John", 100), new Student("2", "Doe", 200) } };
 CosmosUser user2 = new CosmosUser { id = "2", username = "Michael", designation = "Senior Developer", email = "Michael@demo.com" };
 CosmosUser user3 = new CosmosUser { id = "3", username = "Andy", designation = "Senior Developer", email = "Andy@demo.com" };
 
-// await CreateUser(user1);
+await CreateUser(user1);
 // await CreateUser(user2);
 // await CreateUser(user3);
 
+// await 
 //await DisplayUsers();
 //await UpdateUserEmail("3", "Andy", "andynew1@demo.com");
-await DeleteUser("3", "Andy");
+//await DeleteUser("3", "Andy");
+
 async Task CreateUser(CosmosUser user)
 {
     CosmosClient client = ConnectDatabase();

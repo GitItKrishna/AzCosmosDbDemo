@@ -132,3 +132,73 @@ async Task DeleteUser(string id,string username)
 
    ![img_8.png](AzCosmosDbDemo/Images/img_8.png)
 
+**Creating Array of Items in the container**
+
+1. Add the following code to the Program.cs file for creating an array of items in the container
+```csharp
+//Create a new class Student as below.
+    public class Student
+{
+    public string? studentId { get; set; }
+    public string? studentName { get; set; }
+    public decimal price { get; set; }
+    public Student(string studentid, string studentname, decimal price)
+    {
+        this.studentId = studentid;
+        this.studentName = studentname;
+        this.price = price;
+    }
+}
+//also now modify the CosmosUser class as below to include the Student array.
+public class CosmosUser
+{
+    public string id { get; set; }
+    public string username { get; set; }
+    public string designation { get; set; }
+    public string email { get; set; }
+    public int[] publicChapters { get; set; }
+    public List<Student> students { get; set; }
+    public CosmosUser()
+    {
+        
+    }
+
+    public CosmosUser(string username, string designation, string email, int[] publicChapters, List<Student> students)
+    {
+        this.id = Guid.NewGuid().ToString();
+        this.username = username;
+        this.designation = designation;
+        this.email = email;
+        this.publicChapters = publicChapters;
+        this.students = students;
+    }
+}
+
+```
+2. We can use the same method to create a user with students.
+```csharp
+async Task CreateUser(CosmosUser user)
+{
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    
+    ItemResponse<CosmosUser> item= await container.CreateItemAsync<CosmosUser>(user, new PartitionKey(user.username));
+    Console.WriteLine("Item created with id: {0}", item.Resource.id);
+    Console.WriteLine("Item created with StatusCode: {0}", item.StatusCode);
+    Console.WriteLine("");
+}
+```
+3. Invoke the CreateUser method by passing the user object with students.
+```csharp
+    CosmosUser user1 = new CosmosUser { id = "1", username = "Andrew", designation = "Developer", email = "user1@demo.com", publicChapters = new int[] { 1, 2, 3 }, students = new List<Student> { new Student("1", "John", 100), new Student("2", "Doe", 200) } };
+    await CreateUser(user1);
+```
+4. Run the application and check the console logs to verify the successful creation of items in the container.
+   ![img_9.png](AzCosmosDbDemo/Images/img_9.png)
+
+
+5. Navigate to azure portal--> check Azure Cosmos DB account--> Data Explorer--> Select the database and container--> Click on Items to verify the creation of items in the container.
+   The record with id 1 is created in the container.
+   ![img_10.png](AzCosmosDbDemo/Images/img_10.png)
+
