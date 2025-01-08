@@ -108,3 +108,27 @@ async Task UpdateUserEmail(string id,string username, string email)
          new[] { PatchOperation.Replace("/email", email) });
     Console.WriteLine("Item updated with email: {0}", email);
 ```
+
+**Deleting Items in the container**
+1. Add the following code to the Program.cs file for deleting items in the container
+```csharp
+async Task DeleteUser(string id,string username)
+{
+   CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    await container.DeleteItemAsync<CosmosUser>(id, new PartitionKey(username));
+    Console.WriteLine("User Deleted with id: {0}", id);
+}
+```
+2. Invoke the DeleteUser method by passing the id and username of the user to be deleted.
+3. Run the application and check the console logs to verify the successful deletion of items in the container.
+
+   ![img_7.png](AzCosmosDbDemo/Images/img_7.png)
+
+4. Navigate to azure portal--> check Azure Cosmos DB account--> Data Explorer--> Select the database and container--> Click on Items to verify the deletion of items in the container.
+   The record with id 3 is deleted from the container.
+
+
+   ![img_8.png](AzCosmosDbDemo/Images/img_8.png)
+

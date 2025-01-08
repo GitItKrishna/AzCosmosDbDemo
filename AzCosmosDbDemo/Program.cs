@@ -23,9 +23,9 @@ CosmosUser user3 = new CosmosUser { id = "3", username = "Andy", designation = "
 // await CreateUser(user2);
 // await CreateUser(user3);
 
-await DisplayUsers();
-await UpdateUserEmail("3", "Andy", "andynew1@demo.com");
-
+//await DisplayUsers();
+//await UpdateUserEmail("3", "Andy", "andynew1@demo.com");
+await DeleteUser("3", "Andy");
 async Task CreateUser(CosmosUser user)
 {
     CosmosClient client = ConnectDatabase();
@@ -55,6 +55,15 @@ async Task UpdateUserEmail(string id,string username, string email)
     //     new[] { PatchOperation.Replace("/email", email) });
     // Console.WriteLine("Item updated with email: {0}", email);
 }
+//Delete item in container
+async Task DeleteUser(string id,string username)
+{
+    CosmosClient client = ConnectDatabase();
+    Database database = client.GetDatabase(databaseName);
+    Container container = database.GetContainer(containerName);
+    await container.DeleteItemAsync<CosmosUser>(id, new PartitionKey(username));
+    Console.WriteLine("User Deleted with id: {0}", id);
+}
 
 //Querying items from container
 async Task DisplayUsers()
@@ -79,7 +88,7 @@ async Task DisplayUsers()
 
 CosmosClient ConnectDatabase()
 {
-    string connectionString="AccountEndpoint=https://myazcosmosdbinstance.documents.azure.com:443/;AccountKey=e2qYKqY9NrS95G5YSgRAJGkh79VQN1DH3QGQ6OmpFfezF5dW9TldvvJgj90Z9oKAqEtXJaC3EXY7ACDbe417Dw==;";
+    string connectionString="";
     return new CosmosClient(connectionString);
 }
 
